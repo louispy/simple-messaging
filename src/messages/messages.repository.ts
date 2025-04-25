@@ -3,12 +3,12 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
 import { DefaultRepository } from '../common/repository/default.repository';
-import { Conversation, ConversationDocument } from './schemas/conversations.schema';
+import { Message, MessageDocument } from './schemas/messages.schema';
 
 @Injectable()
-export class ConversationsRepository extends DefaultRepository<Conversation> {
+export class MessagesRepository extends DefaultRepository<Message> {
   constructor(
-    @InjectModel(Conversation.name) protected readonly model: Model<ConversationDocument>,
+    @InjectModel(Message.name) protected readonly model: Model<MessageDocument>,
   ) {
     super(model);
   }

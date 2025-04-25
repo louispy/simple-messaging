@@ -1,7 +1,7 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { RequestContextService } from '../request-context/request-context.service';
 import { CreateUserDto } from './dto/users.request.dto';
-import { User } from './entities/users.schema';
+import { User } from './schemas/users.schema';
 import { UsersRepository } from './users.repository';
 
 import { hash } from 'bcrypt';

@@ -1,7 +1,7 @@
 import { ConfigService } from '@nestjs/config';
 import { hash, genSalt } from 'bcrypt';
 import { ILogger } from '../logger/logger.interface';
-import { User } from '../users/entities/users.schema';
+import { User } from '../users/schemas/users.schema';
 import { UsersRepository } from '../users/users.repository';
 
 export class AdminUserSeederService {
