@@ -312,6 +312,7 @@ describe('ConversationsService', () => {
         limit: 10,
         sortBy: 'timestamp',
         sortDir: 'desc',
+        conversationId: 'id',
       };
       const mockElasticsearchResponse = {
         hits: {
@@ -354,7 +355,14 @@ describe('ConversationsService', () => {
         index: 'messages',
         from: 0,
         size: 10,
-        query: { match: { content: 'search query' } },
+        query: {
+          bool: {
+            must: [
+              { match: { content: 'search query' } },
+              { term: { conversationId: 'id' } },
+            ],
+          },
+        },
         sort: { timestamp: 'desc' },
       });
       expect(result).toEqual({

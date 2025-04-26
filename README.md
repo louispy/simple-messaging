@@ -23,7 +23,7 @@ Simple Message APIs with NestJS
 db.createCollection("messages") // if collection doesn't exist yet
 db.messages.createIndex({ conversationId: 1, timestamp: -1 })
 ```
-2. Kafka: The config for auto topic generation is on in this application. However for a better control, the topic (default: tawk-messaging.index-messages) may be created beforehand to setup the topic settings, i.e number of partitions.
+2. Kafka: The config for auto topic generation is on in this application. However for a better control, the topic (default: tawk-messaging.index-messages) may be created beforehand to setup the topic settings, i.e number of partitions, isr.
 3. Elasticsearch: Although by default indices are created dynamically, the index can be initialized manually to define mappings before inserting documents, i.e
 ```
 curl -X PUT "http://localhost:9200/messages" -H "Content-Type: application/json" -d '
@@ -40,6 +40,8 @@ curl -X PUT "http://localhost:9200/messages" -H "Content-Type: application/json"
   }
 }'
 ```
+Depending on specific requirements, the mappings and queries may be adjusted. Since the main use case of elasticsearch for message searching is to search by terms, assume that content type text suffice. The search will use the "match" query to look for case-insensitive words.
+However, if there's a requirement to match partial words, the query may be changed to use "wildcard" or "prefix" search while keeping in mind that it's less performant and much slower than a full word search with "match".
 
 ## Project Structure
 The project follows default NestJS project structure style, in modules.
