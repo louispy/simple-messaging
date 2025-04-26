@@ -7,6 +7,7 @@ Simple Message APIs with NestJS
 - MongoDB
 - Kafka
 - Elasticsearch
+- Redis
 
 ## Setup
 1. Recommended nodejs version 22+
@@ -44,7 +45,7 @@ Depending on specific requirements, the mappings and queries may be adjusted. Si
 However, if there's a requirement to match partial words, the query may be changed to use "wildcard" or "prefix" search while keeping in mind that it's less performant and much slower than a full word search with "match".
 
 ## Project Structure
-The project follows default NestJS project structure style, in modules.
+The project follows default NestJS project structure style, in modules with dependency injections pattern.
 The modules are created with nest-cli generate command.
 The coupling between modules are minimized.
 
