@@ -8,7 +8,6 @@ import {
 import { KafkaConsumerModule } from '../kafka/kafka.consumer.module';
 import { ConsumerController } from './consumer.controller';
 import { ConsumerService } from './consumer.service';
-import { ElasticsearchService } from '@nestjs/elasticsearch';
 
 @Module({
   imports: [KafkaConsumerModule, ElasticsearchModule],

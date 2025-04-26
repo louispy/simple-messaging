@@ -18,12 +18,15 @@ import {
   SearchMessagesResponseDto,
 } from './dto/conversation.response.dto';
 import { Conversation } from './schemas/conversations.schema';
+import { REDIS_CLIENT } from '../redis/redis.module';
+import Redis from 'ioredis';
 
 describe('ConversationsService', () => {
   let service: ConversationsService;
   let conversationsRepository: ConversationsRepository;
   let messagesRepository: MessagesRepository;
   let elasticsearchService: ElasticsearchService;
+  let redisClient: Redis;
 
   const mockUser = { userId: 'user123' };
 
@@ -61,13 +64,24 @@ describe('ConversationsService', () => {
             getUser: jest.fn(() => mockUser),
           },
         },
+        {
+          provide: REDIS_CLIENT,
+          useValue: {
+            get: jest.fn(),
+            set: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
     service = module.get<ConversationsService>(ConversationsService);
-    conversationsRepository = module.get<ConversationsRepository>(ConversationsRepository);
+    conversationsRepository = module.get<ConversationsRepository>(
+      ConversationsRepository,
+    );
     messagesRepository = module.get<MessagesRepository>(MessagesRepository);
-    elasticsearchService = module.get<ElasticsearchService>(ElasticsearchService);
+    elasticsearchService =
+      module.get<ElasticsearchService>(ElasticsearchService);
+    redisClient = module.get<Redis>(REDIS_CLIENT);
   });
 
   it('should be defined', () => {
@@ -79,11 +93,16 @@ describe('ConversationsService', () => {
       const payload: CreateConversationRequestDto = {};
       const mockConversation = new Conversation();
       mockConversation.id = 'conversation123';
-      (conversationsRepository.insert as jest.Mock).mockResolvedValue(mockConversation);
+      (conversationsRepository.insert as jest.Mock).mockResolvedValue(
+        mockConversation,
+      );
 
-      const result: CreateConversationResponseDto = await service.create(payload);
+      const result: CreateConversationResponseDto =
+        await service.create(payload);
 
-      expect(conversationsRepository.insert).toHaveBeenCalledWith(expect.any(Conversation));
+      expect(conversationsRepository.insert).toHaveBeenCalledWith(
+        expect.any(Conversation),
+      );
       expect(result).toEqual({
         id: 'conversation123',
         message: 'Success Create Conversation',
@@ -93,14 +112,62 @@ describe('ConversationsService', () => {
     it('should throw BadRequestException if an error occurs', async () => {
       const payload: CreateConversationRequestDto = {};
       const errorMessage = 'Failed to create conversation';
-      (conversationsRepository.insert as jest.Mock).mockRejectedValue(new Error(errorMessage));
+      (conversationsRepository.insert as jest.Mock).mockRejectedValue(
+        new Error(errorMessage),
+      );
 
-      await expect(service.create(payload)).rejects.toThrowError(BadRequestException);
+      await expect(service.create(payload)).rejects.toThrowError(
+        BadRequestException,
+      );
       await expect(service.create(payload)).rejects.toThrow(errorMessage);
     });
   });
 
   describe('getMessages', () => {
+    it('should return cached data', async () => {
+      const payload: GetMessagesRequestDto = {
+        conversationId: 'conversation123',
+        page: 2,
+        limit: 5,
+        sortBy: 'timestamp',
+        sortDir: 'asc',
+        select: 'id,content,timestamp,createdBy,conversationId,metadata',
+      };
+      const mockResponse = {
+        data: [
+          {
+            id: 'message1',
+            conversationId: 'conversation123',
+            content: 'Message 1',
+            timestamp: '2024-01-15T10:00:00.000Z',
+            senderId: 'user1',
+            metadata: { key1: 'value1' },
+          },
+          {
+            id: 'message2',
+            conversationId: 'conversation123',
+            content: 'Message 2',
+            timestamp: '2024-01-15T11:00:00.000Z',
+            senderId: 'user2',
+            metadata: { key1: 'value2' },
+          },
+        ],
+        paging: {
+          page: 2,
+          limit: 5,
+          count: 10,
+          totalPages: 2,
+        },
+      };
+
+      (redisClient.get as jest.Mock).mockResolvedValue(
+        JSON.stringify(mockResponse),
+      );
+
+      const result: GetMessagesResponseDto = await service.getMessages(payload);
+
+      expect(result).toEqual(mockResponse);
+    });
     it('should retrieve messages for a conversation with pagination and sorting', async () => {
       const payload: GetMessagesRequestDto = {
         conversationId: 'conversation123',
@@ -128,6 +195,9 @@ describe('ConversationsService', () => {
           metadata: { key1: 'value2' },
         },
       ];
+
+      (redisClient.get as jest.Mock).mockResolvedValue(null);
+      (redisClient.set as jest.Mock).mockResolvedValue(null);
       (messagesRepository.find as jest.Mock).mockResolvedValue(mockMessages);
       (messagesRepository.count as jest.Mock).mockResolvedValue(10);
 
@@ -143,7 +213,9 @@ describe('ConversationsService', () => {
           select: 'id,content,timestamp,createdBy,conversationId,metadata',
         },
       );
-      expect(messagesRepository.count).toHaveBeenCalledWith({ conversationId: 'conversation123' });
+      expect(messagesRepository.count).toHaveBeenCalledWith({
+        conversationId: 'conversation123',
+      });
       expect(result).toEqual({
         data: [
           {
@@ -172,24 +244,67 @@ describe('ConversationsService', () => {
       });
     });
 
-      it('should handle default pagination values', async () => {
-        const payload: GetMessagesRequestDto = { conversationId: 'conversation123' };
-        const mockMessages = [];
-        (messagesRepository.find as jest.Mock).mockResolvedValue(mockMessages);
-        (messagesRepository.count as jest.Mock).mockResolvedValue(0);
+    it('should handle default pagination values', async () => {
+      const payload: GetMessagesRequestDto = {
+        conversationId: 'conversation123',
+      };
+      const mockMessages = [];
+      (redisClient.get as jest.Mock).mockResolvedValue(null);
+      (redisClient.set as jest.Mock).mockResolvedValue(null);
+      (messagesRepository.find as jest.Mock).mockResolvedValue(mockMessages);
+      (messagesRepository.count as jest.Mock).mockResolvedValue(0);
 
-        await service.getMessages(payload);
+      await service.getMessages(payload);
 
-        expect(messagesRepository.find).toHaveBeenCalledWith(
-          { conversationId: 'conversation123' },
-          1,
-          10,
-          { sort: 'timestamp', sortDir: 'desc', select: undefined },
-        );
-      });
+      expect(messagesRepository.find).toHaveBeenCalledWith(
+        { conversationId: 'conversation123' },
+        1,
+        10,
+        { sort: 'timestamp', sortDir: 'desc', select: undefined },
+      );
+    });
   });
 
   describe('searchMessages', () => {
+    it('should return cached data', async () => {
+      const payload: SearchMessagesRequestDto = {
+        q: 'search query',
+        page: 1,
+        limit: 10,
+        sortBy: 'timestamp',
+        sortDir: 'desc',
+      };
+
+      const mockResponse = {
+        data: [
+          {
+            id: 'message1',
+            conversationId: 'conversation123',
+            content: 'Message 1 content',
+            timestamp: '2024-01-15T10:00:00Z',
+            senderId: 'user1',
+            metadata: { key1: 'value1' },
+          },
+          {
+            id: 'message2',
+            conversationId: 'conversation123',
+            content: 'Message 2 content',
+            timestamp: '2024-01-15T11:00:00Z',
+            senderId: 'user2',
+            metadata: { key1: 'value2' },
+          },
+        ],
+        paging: { page: 1, limit: 10, count: 2, totalPages: 1 },
+      };
+      (redisClient.get as jest.Mock).mockResolvedValue(
+        JSON.stringify(mockResponse),
+      );
+
+      const result: SearchMessagesResponseDto =
+        await service.searchMessages(payload);
+
+      expect(result).toEqual(mockResponse);
+    });
     it('should search messages using Elasticsearch and return results', async () => {
       const payload: SearchMessagesRequestDto = {
         q: 'search query',
@@ -225,9 +340,15 @@ describe('ConversationsService', () => {
           ],
         },
       };
-      (elasticsearchService.search as jest.Mock).mockResolvedValue(mockElasticsearchResponse);
 
-      const result: SearchMessagesResponseDto = await service.searchMessages(payload);
+      (redisClient.get as jest.Mock).mockResolvedValue(null);
+      (redisClient.set as jest.Mock).mockResolvedValue(null);
+      (elasticsearchService.search as jest.Mock).mockResolvedValue(
+        mockElasticsearchResponse,
+      );
+
+      const result: SearchMessagesResponseDto =
+        await service.searchMessages(payload);
 
       expect(elasticsearchService.search).toHaveBeenCalledWith({
         index: 'messages',
@@ -267,9 +388,15 @@ describe('ConversationsService', () => {
           hits: [],
         },
       };
-      (elasticsearchService.search as jest.Mock).mockResolvedValue(mockElasticsearchResponse);
 
-      const result: SearchMessagesResponseDto = await service.searchMessages(payload);
+      (redisClient.get as jest.Mock).mockResolvedValue(null);
+      (redisClient.set as jest.Mock).mockResolvedValue(null);
+      (elasticsearchService.search as jest.Mock).mockResolvedValue(
+        mockElasticsearchResponse,
+      );
+
+      const result: SearchMessagesResponseDto =
+        await service.searchMessages(payload);
 
       expect(result).toEqual({
         data: [],
@@ -280,11 +407,19 @@ describe('ConversationsService', () => {
     it('should throw BadRequestException on Elasticsearch error', async () => {
       const payload: SearchMessagesRequestDto = { q: 'error query' };
       const errorMessage = 'Elasticsearch error';
-      (elasticsearchService.search as jest.Mock).mockRejectedValue(new Error(errorMessage));
 
-      await expect(service.searchMessages(payload)).rejects.toThrowError(BadRequestException);
-      await expect(service.searchMessages(payload)).rejects.toThrow(errorMessage);
+      (redisClient.get as jest.Mock).mockResolvedValue(null);
+      (redisClient.set as jest.Mock).mockResolvedValue(null);
+      (elasticsearchService.search as jest.Mock).mockRejectedValue(
+        new Error(errorMessage),
+      );
+
+      await expect(service.searchMessages(payload)).rejects.toThrowError(
+        BadRequestException,
+      );
+      await expect(service.searchMessages(payload)).rejects.toThrow(
+        errorMessage,
+      );
     });
   });
 });
-
