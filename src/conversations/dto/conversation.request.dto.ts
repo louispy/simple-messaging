@@ -1,4 +1,5 @@
 import { IsOptional, IsString } from 'class-validator';
+
 import { DefaultGetQueryDto } from '../../common/dto/query.request';
 
 export class CreateConversationRequestDto {}
@@ -10,6 +11,10 @@ export class GetMessagesRequestDto extends DefaultGetQueryDto {
 }
 
 export class SearchMessagesRequestDto extends DefaultGetQueryDto {
+  @IsString()
+  @IsOptional()
+  conversationId?: string;
+
   @IsOptional()
   @IsString()
   q?: string;
