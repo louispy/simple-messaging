@@ -1,8 +1,25 @@
 import { Module } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
-import { KafkaProducerService } from './kafka.producer.service';
+import { KafkaTopic } from './interfaces/kafka.interface';
+import { KAFKA_TOPIC } from './interfaces/kafka.tokens.interface';
 
 @Module({
-  exports: [KafkaProducerService],
+  providers: [
+    {
+      provide: KAFKA_TOPIC,
+      useFactory: (config: ConfigService) => {
+        const kafkaTopic: KafkaTopic = {
+          indexMessage: config.get(
+            'KAFKA_TOPIC_INDEX_MESSAGE',
+            'default-topic',
+          ),
+        };
+        return kafkaTopic;
+      },
+      inject: [ConfigService],
+    },
+  ],
+  exports: [KAFKA_TOPIC],
 })
-export class KafkaModule {}
+export class KafkaConsumerModule {}

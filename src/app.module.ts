@@ -12,6 +12,7 @@ import { ConversationsModule } from './conversations/conversations.module';
 import { DatabaseModule } from './database/database.module';
 import { LoggerModule } from './logger/logger.module';
 import { MessagesModule } from './messages/messages.module';
+// import { ConsumerModule } from './consumer/consumer.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { MessagesModule } from './messages/messages.module';
     LoggerModule,
     ConversationsModule,
     MessagesModule,
+    // ConsumerModule,
   ],
   controllers: [AppController],
   providers: [AppService],

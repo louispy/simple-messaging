@@ -3,6 +3,8 @@ import { NestFactory } from '@nestjs/core';
 
 import { AppModule } from './app.module';
 import { ResponseSerializerInterceptor } from './common/interceptors/response.serializer.interceptor';
+import { ConsumerAppModule } from './consumer.app.module';
+import { Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -15,4 +17,32 @@ async function bootstrap() {
   app.useGlobalInterceptors(new ResponseSerializerInterceptor());
   await app.listen(process.env.PORT ?? 3000);
 }
-bootstrap();
+
+async function bootstrapConsumer() {
+  const app = await NestFactory.createMicroservice(ConsumerAppModule, {
+    transport: Transport.KAFKA,
+    options: {
+      client: {
+        brokers: (process.env.KAFKA_BROKERS || 'localhost:9092').split(','),
+        clientId: process.env.KAFKA_CLIENT_ID,
+      },
+      consumer: {
+        groupId: process.env.KAFKA_GROUP_ID,
+        allowTopicAutoCreation: true,
+      },
+      subscribe: {
+        fromBeginning: true,
+      },
+    },
+  });
+  await app.listen();
+}
+
+if (require.main === module) {
+  const mode = process.env.MODE;
+  if (mode === 'consumer') {
+    bootstrapConsumer();
+  } else {
+    bootstrap();
+  }
+}
