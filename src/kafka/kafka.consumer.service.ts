@@ -24,7 +24,7 @@ export abstract class BaseKafkaConsumerService {
       } catch (err) {
         attempt++;
         this.logger.error('Error when consuming message. Retrying...', err);
-        await sleep(delay * Math.pow(2, attempt - 1));
+        await sleep(delay * Math.pow(3, attempt - 1));
       }
     } while (attempt < maxRetries);
   }

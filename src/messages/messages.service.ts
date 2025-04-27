@@ -45,7 +45,8 @@ export class MessagesService {
       message.timestamp = payload.timestamp ? new Date(payload.timestamp) : now;
       const newMessage = await this.repo.insert(message);
 
-      await this.kafkaProducerService
+      // let sendMessage run in background without blocking api response
+      this.kafkaProducerService
         .sendMessage(this.kafkaTopic.indexMessage, randomUUID(), newMessage, {
           timestamp: now,
         })

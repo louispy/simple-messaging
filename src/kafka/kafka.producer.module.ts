@@ -5,6 +5,8 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { KafkaProducerService } from './kafka.producer.service';
 import { KAFKA_CLIENT, KAFKA_TOPIC } from './interfaces/kafka.tokens.interface';
 import { KafkaTopic } from './interfaces/kafka.interface';
+import { LOGGER } from '../logger/logger.interface';
+import { LoggerService } from '../logger/logger.service';
 
 @Module({
   imports: [
@@ -50,6 +52,7 @@ import { KafkaTopic } from './interfaces/kafka.interface';
       },
       inject: [ConfigService],
     },
+    { provide: LOGGER, useClass: LoggerService },
     KafkaProducerService,
   ],
   exports: [KafkaProducerService, KAFKA_TOPIC],
