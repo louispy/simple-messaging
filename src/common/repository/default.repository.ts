@@ -1,12 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { Document, Model } from 'mongoose';
+import { Document, Model, QueryOptions } from 'mongoose';
 
 import { BaseRepository, FindOptions } from './base.repository.interface';
 
 @Injectable()
-export abstract class DefaultRepository<T>
-  implements BaseRepository<T>
-{
+export abstract class DefaultRepository<T> implements BaseRepository<T> {
   constructor(protected readonly model: Model<any>) {}
 
   async insert(obj: T, session?: any): Promise<T> {
@@ -29,7 +27,7 @@ export abstract class DefaultRepository<T>
     let q = this.model
       .find({ ...query, isDeleted: false })
       .skip((page - 1) * limit)
-      .limit(limit)
+      .limit(limit);
 
     if (options.sort && options.sortDir) {
       q = q.sort({ [options.sort]: options.sortDir });
@@ -42,8 +40,12 @@ export abstract class DefaultRepository<T>
     return q;
   }
 
-  async findOne(id: string): Promise<T | null> {
-    return this.model.findOne({ _id: id, isDeleted: false });
+  async findOne(id: string, session?: any): Promise<T | null> {
+    const opt: QueryOptions = {};
+    if (session) {
+      opt.session = session;
+    }
+    return this.model.findOne({ _id: id, isDeleted: false }, opt);
   }
 
   async findOneDoc(id: string): Promise<(T & Document) | null> {
@@ -54,11 +56,15 @@ export abstract class DefaultRepository<T>
     return this.model.countDocuments({ ...query, isDeleted: false });
   }
 
-  async upsert(query: any = {}, value: any): Promise<T | null> {
-    const doc = await this.model.findOneAndUpdate(query, value, {
+  async upsert(query: any = {}, value: any, session?: any): Promise<T | null> {
+    const opt: QueryOptions = {
       upsert: true,
       new: true,
-    });
+    };
+    if (session) {
+      opt.session = session;
+    }
+    const doc = await this.model.findOneAndUpdate(query, value, opt);
     return doc;
   }
 
@@ -66,20 +72,29 @@ export abstract class DefaultRepository<T>
     id: string,
     value: Partial<T>,
     criteria: any = {},
+    session?: any,
   ): Promise<T> {
+    const opt: QueryOptions = { new: true };
+    if (session) {
+      opt.session = session;
+    }
     const doc = await this.model.findOneAndUpdate(
       { _id: id, ...criteria, isDeleted: false },
       value,
-      { new: true },
+      opt,
     );
     return doc;
   }
 
-  async deleteOne(id: string): Promise<T> {
+  async deleteOne(id: string, session?: any): Promise<T> {
+    const opt: QueryOptions = {};
+    if (session) {
+      opt.session = session;
+    }
     const doc = await this.model.findOneAndUpdate(
       { _id: id, isDeleted: false },
       { isDeleted: true },
-      { new: true },
+      opt,
     );
     return doc;
   }

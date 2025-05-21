@@ -1,6 +1,9 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { InjectConnection } from '@nestjs/mongoose';
 import { randomUUID } from 'crypto';
+import { Connection } from 'mongoose';
 
+import { MongooseTransactionalBaseService } from '../common/services/mongoose-transactional-base.service';
 import { ConversationsRepository } from '../conversations/conversations.repository';
 import { KafkaTopic } from '../kafka/interfaces/kafka.interface';
 import { KAFKA_TOPIC } from '../kafka/interfaces/kafka.tokens.interface';
@@ -13,8 +16,9 @@ import { MessagesRepository } from './messages.repository';
 import { Message } from './schemas/messages.schema';
 
 @Injectable()
-export class MessagesService {
+export class MessagesService extends MongooseTransactionalBaseService {
   constructor(
+    @InjectConnection() connection: Connection,
     private readonly repo: MessagesRepository,
     private readonly conversationRepo: ConversationsRepository,
     private readonly kafkaProducerService: KafkaProducerService,
@@ -22,7 +26,9 @@ export class MessagesService {
     private readonly logger: ILogger,
     @Inject(KAFKA_TOPIC)
     private readonly kafkaTopic: KafkaTopic,
-  ) {}
+  ) {
+    super(connection);
+  }
 
   public async createMessage(
     payload: CreateMessageRequestDto,
