@@ -3,7 +3,7 @@ import { Document, Types } from 'mongoose';
 
 export enum OutboxEventStatus {
   Pending = 1,
-  Processed,
+  Processing,
   Sent,
 }
 
