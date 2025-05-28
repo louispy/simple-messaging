@@ -25,7 +25,9 @@ import { AdminUserSeederService } from './user.seeder.service';
         userRepo: UsersRepository,
         loggerService: ILogger,
         configService: ConfigService,
-      ) => new AdminUserSeederService(userRepo, loggerService, configService),
+      ) => {
+        return new AdminUserSeederService(userRepo, loggerService, configService);
+      }
     },
   ],
 })

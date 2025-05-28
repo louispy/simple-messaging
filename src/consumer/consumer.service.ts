@@ -39,7 +39,8 @@ export class ConsumerService extends BaseKafkaConsumerService {
 
       const errors = validateSync(msg);
       if (errors.length > 0) {
-        throw new Error(`Payload validation failed: ${JSON.stringify(errors)}`);
+        console.error(`Payload validation failed: ${JSON.stringify(errors)}`);
+        return;
       }
 
       await this.elasticsearchService.index({

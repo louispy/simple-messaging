@@ -16,6 +16,6 @@ export interface BaseRepository<T> {
   count(query: any): Promise<number>;
   upsert(query: any, value: any): Promise<T | null>;
   updateOne(id: string, value: Partial<T>): Promise<T | null>;
-  updateMany(criteria: any, value: Partial<T>): Promise<T | null>;
+  updateMany(criteria: any, value: Partial<T>): Promise<void>;
   deleteOne(id: string): Promise<T | null>;
 }
