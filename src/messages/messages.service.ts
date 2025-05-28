@@ -41,13 +41,12 @@ export class MessagesService extends MongooseTransactionalBaseService {
         throw new Error(`Conversation ${payload.conversationId} not found!`);
       }
       const now = new Date();
-      const user = RequestContextService.getUser();
       const message = new Message();
       message.conversationId = payload.conversationId;
       message.content = payload.content;
       message.metadata = payload.metadata;
-      message.createdBy = user.userId;
-      message.updatedBy = user.userId;
+      message.createdBy = payload.userId;
+      message.updatedBy = payload.userId;
       message.timestamp = payload.timestamp ? new Date(payload.timestamp) : now;
       let newMessage = new Message();
       await this.withTransaction(async (session: any) => {
