@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   api:
-    image: tawk-messaging
+    image: simple-messaging
     env_file:
       - production.env
     environment:
@@ -13,7 +13,7 @@ services:
     #   replicas: 3
 
   consumer:
-    image: tawk-messaging
+    image: simple-messaging
     env_file:
       - production.env
     environment:
@@ -23,7 +23,7 @@ services:
     #   replicas: 3
 
   seed:
-    image: tawk-messaging
+    image: simple-messaging
     env_file:
       - production.env
     command: ["npm", "run", "seed:admin:prod"]

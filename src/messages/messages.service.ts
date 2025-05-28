@@ -1,6 +1,9 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { InjectConnection } from '@nestjs/mongoose';
 import { randomUUID } from 'crypto';
+import { Connection } from 'mongoose';
 
+import { MongooseTransactionalBaseService } from '../common/services/mongoose-transactional-base.service';
 import { ConversationsRepository } from '../conversations/conversations.repository';
 import { KafkaTopic } from '../kafka/interfaces/kafka.interface';
 import { KAFKA_TOPIC } from '../kafka/interfaces/kafka.tokens.interface';
@@ -13,8 +16,9 @@ import { MessagesRepository } from './messages.repository';
 import { Message } from './schemas/messages.schema';
 
 @Injectable()
-export class MessagesService {
+export class MessagesService extends MongooseTransactionalBaseService {
   constructor(
+    @InjectConnection() connection: Connection,
     private readonly repo: MessagesRepository,
     private readonly conversationRepo: ConversationsRepository,
     private readonly kafkaProducerService: KafkaProducerService,
@@ -22,7 +26,9 @@ export class MessagesService {
     private readonly logger: ILogger,
     @Inject(KAFKA_TOPIC)
     private readonly kafkaTopic: KafkaTopic,
-  ) {}
+  ) {
+    super(connection);
+  }
 
   public async createMessage(
     payload: CreateMessageRequestDto,
@@ -43,16 +49,22 @@ export class MessagesService {
       message.createdBy = user.userId;
       message.updatedBy = user.userId;
       message.timestamp = payload.timestamp ? new Date(payload.timestamp) : now;
-      const newMessage = await this.repo.insert(message);
+      let newMessage = new Message();
+      await this.withTransaction(async (session: any) => {
+        newMessage = await this.repo.insert(message, session);
 
-      // let sendMessage run in background without blocking api response
-      this.kafkaProducerService
-        .sendMessage(this.kafkaTopic.indexMessage, randomUUID(), newMessage, {
-          timestamp: now,
-        })
-        .catch((err) => {
-          this.logger.error('error while producing message', err);
-        });
+        await this.kafkaProducerService
+          .sendMessageWithOutbox(
+            this.kafkaTopic.indexMessage,
+            randomUUID(),
+            newMessage,
+            { timestamp: now },
+            session,
+          )
+          .catch((err) => {
+            this.logger.error('error while producing message', err);
+          });
+      });
       return {
         id: newMessage.id,
         message: 'Success Create Message',
