@@ -36,8 +36,8 @@ export abstract class DefaultRepository<T> implements BaseRepository<T> {
     if (options.select) {
       q = q.select(options.select);
     }
-
-    return q;
+    const res = await q;
+    return res.map(e => e.toJSON());
   }
 
   async findOne(id: string, session?: any): Promise<T | null> {
@@ -90,17 +90,16 @@ export abstract class DefaultRepository<T> implements BaseRepository<T> {
     criteria: any = {},
     value: Partial<T>,
     session?: any,
-  ): Promise<T> {
-    const opt: QueryOptions = {};
+  ): Promise<void> {
+    const opt: any = {};
     if (session) {
       opt.session = session;
     }
-    const doc = await this.model.findOneAndUpdate(
+    await this.model.updateMany(
       { ...criteria, isDeleted: false },
-      value,
+      { $set: value},
       opt,
     );
-    return doc;
   }
 
   async deleteOne(id: string, session?: any): Promise<T> {

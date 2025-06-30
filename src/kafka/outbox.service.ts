@@ -65,6 +65,7 @@ export class OutboxService {
       }
     } catch (err) {
       this.logger.error('OutboxService.processPendingEvents error', err);
+      return;
     } finally {
       if (isLocked) {
         await this.redis.del(key).catch((err) => {
@@ -78,8 +79,10 @@ export class OutboxService {
 
     const promises = pendingOutboxEvents.map(async (event) => {
       try {
+        event.message = JSON.parse(event.message);
+        event.metadata = JSON.stringify(event.metadata);
         const kafkaSuccess = await this.kafkaProducerService
-          .sendMessage(event.topic, event.key, event.message)
+          .sendMessage(event.topic, event.key, event.message, event.metadata)
           .then(() => true)
           .catch(() => false);
         await this.outboxRepo.updateOne(event.id, {

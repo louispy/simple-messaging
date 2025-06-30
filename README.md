@@ -27,7 +27,7 @@ db.messages.createIndex({ conversationId: 1, timestamp: -1 })
 2. Kafka: The config for auto topic generation is on in this application. However for a better control, the topic (default: simple-messaging.index-messages) may be created beforehand to setup the topic settings, i.e number of partitions, isr.
 3. Elasticsearch: Although by default indices are created dynamically, the index can be initialized manually to define mappings before inserting documents, i.e
 ```
-curl -X PUT "http://localhost:9200/messages" -H "Content-Type: application/json" -d '
+curl -X PUT "http://localhost:9200/simple-messaging" -H "Content-Type: application/json" -d '
 {
   "mappings": {
     "properties": {

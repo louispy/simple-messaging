@@ -49,16 +49,22 @@ export class MessagesService extends MongooseTransactionalBaseService {
       message.createdBy = user.userId;
       message.updatedBy = user.userId;
       message.timestamp = payload.timestamp ? new Date(payload.timestamp) : now;
-      const newMessage = await this.repo.insert(message);
+      let newMessage = new Message();
+      await this.withTransaction(async (session: any) => {
+        newMessage = await this.repo.insert(message, session);
 
-      // let sendMessage run in background without blocking api response
-      this.kafkaProducerService
-        .sendMessage(this.kafkaTopic.indexMessage, randomUUID(), newMessage, {
-          timestamp: now,
-        })
-        .catch((err) => {
-          this.logger.error('error while producing message', err);
-        });
+        await this.kafkaProducerService
+          .sendMessageWithOutbox(
+            this.kafkaTopic.indexMessage,
+            randomUUID(),
+            newMessage,
+            { timestamp: now },
+            session,
+          )
+          .catch((err) => {
+            this.logger.error('error while producing message', err);
+          });
+      });
       return {
         id: newMessage.id,
         message: 'Success Create Message',
