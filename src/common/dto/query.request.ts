@@ -4,11 +4,13 @@ import { IsNumber, IsOptional, IsString } from 'class-validator';
 export class DefaultPaginationQueryDto {
   @Type(() => Number)
   @IsNumber()
-  page: number;
+  @IsOptional()
+  page?: number;
 
   @Type(() => Number)
   @IsNumber()
-  limit: number;
+  @IsOptional()
+  limit?: number;
 }
 
 export class DefaultGetQueryDto extends DefaultPaginationQueryDto {
@@ -22,7 +24,7 @@ export class DefaultGetQueryDto extends DefaultPaginationQueryDto {
 
   @IsOptional()
   @IsString()
-  sortDir?: 'ASC' | 'DESC';
+  sortDir?: 'asc' | 'desc';
 
   @IsOptional()
   @IsString()
