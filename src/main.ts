@@ -5,6 +5,7 @@ import { AppModule } from './app.module';
 import { ResponseSerializerInterceptor } from './common/interceptors/response.serializer.interceptor';
 import { ConsumerAppModule } from './consumer.app.module';
 import { Transport } from '@nestjs/microservices';
+import { OutboxAppModule } from './outbox.app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -38,10 +39,17 @@ async function bootstrapConsumer() {
   await app.listen();
 }
 
+async function bootstrapOutbox() {
+  const app = await NestFactory.createApplicationContext(OutboxAppModule);
+  console.log('outbox app is up!');
+}
+
 if (require.main === module) {
   const mode = process.env.MODE;
   if (mode === 'consumer') {
     bootstrapConsumer();
+  } else if (mode === 'outbox') {
+    bootstrapOutbox();
   } else {
     bootstrap();
   }

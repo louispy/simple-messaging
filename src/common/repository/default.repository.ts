@@ -86,6 +86,23 @@ export abstract class DefaultRepository<T> implements BaseRepository<T> {
     return doc;
   }
 
+  async updateMany(
+    criteria: any = {},
+    value: Partial<T>,
+    session?: any,
+  ): Promise<T> {
+    const opt: QueryOptions = {};
+    if (session) {
+      opt.session = session;
+    }
+    const doc = await this.model.findOneAndUpdate(
+      { ...criteria, isDeleted: false },
+      value,
+      opt,
+    );
+    return doc;
+  }
+
   async deleteOne(id: string, session?: any): Promise<T> {
     const opt: QueryOptions = {};
     if (session) {
