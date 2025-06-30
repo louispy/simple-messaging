@@ -11,6 +11,8 @@ const transform = (doc: any, ret: any) => {
   message.conversationId = ret.conversationId;
   message.content = ret.content;
   message.metadata = ret.metadata;
+  message.timestamp = ret.timestamp;
+  message.createdBy = ret.createdBy;
 
   return message;
 };
@@ -28,6 +30,9 @@ export class Message {
 
   @Prop({ type: mongoose.Schema.Types.Mixed })
   metadata?: Record<string, any>;
+
+  @Prop({ required: true })
+  timestamp: Date;
 
   @Prop({ default: false })
   isDeleted: boolean;

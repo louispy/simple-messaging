@@ -42,6 +42,7 @@ export class MessagesService {
       message.metadata = payload.metadata;
       message.createdBy = user.userId;
       message.updatedBy = user.userId;
+      message.timestamp = payload.timestamp ? new Date(payload.timestamp) : now;
       const newConversation = await this.repo.insert(message);
 
       await this.kafkaProducerService
