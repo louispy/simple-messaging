@@ -7,6 +7,9 @@ import { KAFKA_CLIENT, KAFKA_TOPIC } from './interfaces/kafka.tokens.interface';
 import { KafkaTopic } from './interfaces/kafka.interface';
 import { LOGGER } from '../logger/logger.interface';
 import { LoggerService } from '../logger/logger.service';
+import { OutboxRepository } from './outbox.repository';
+import { MongooseModule } from '@nestjs/mongoose';
+import { Outbox, OutboxSchema } from './schemas/outbox.schema';
 
 @Module({
   imports: [
@@ -25,6 +28,13 @@ import { LoggerService } from '../logger/logger.service';
               client: {
                 clientId: kafkaConfig.clientId,
                 brokers: kafkaConfig.brokers,
+              retry: {
+                initialRetryTime: 300, // ms, initial delay before first retry
+                maxRetryTime: 30000, // ms, max delay between retries
+                retries: 20, // Number of retry attempts for the client to connect
+                factor: 2, // Exponential backoff factor
+                multiplier: 1.5, // Multiplier for exponential backoff (e.g., 100ms, 150ms, 225ms...)
+              },
               },
               consumer: {
                 groupId: kafkaConfig.groupId,
@@ -37,6 +47,7 @@ import { LoggerService } from '../logger/logger.service';
         inject: [ConfigService],
       },
     ]),
+    MongooseModule.forFeature([{ name: Outbox.name, schema: OutboxSchema }]),
   ],
   providers: [
     {
@@ -53,6 +64,7 @@ import { LoggerService } from '../logger/logger.service';
       inject: [ConfigService],
     },
     { provide: LOGGER, useClass: LoggerService },
+    OutboxRepository,
     KafkaProducerService,
   ],
   exports: [KafkaProducerService, KAFKA_TOPIC],
