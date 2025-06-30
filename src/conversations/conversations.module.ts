@@ -7,7 +7,7 @@ import { ConversationsService } from './conversations.service';
 import {
   Conversation,
   ConversationSchema,
-} from './entities/conversations.schema';
+} from './schemas/conversations.schema';
 
 @Module({
   imports: [

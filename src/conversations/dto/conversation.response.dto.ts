@@ -1,4 +1,4 @@
-export class CreateConversationResponse {
+export class CreateConversationResponseDto {
   id: string;
   message: string;
 }

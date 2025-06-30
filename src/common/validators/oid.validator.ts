@@ -11,6 +11,6 @@ export class IsObjectId implements ValidatorConstraintInterface {
     return Types.ObjectId.isValid(value);
   }
   defaultMessage(args: ValidationArguments) {
-    return `${args.value} is not a valid ObjectId`;
+    return `${args.property} is not a valid ObjectId`;
   }
 }

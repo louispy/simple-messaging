@@ -4,7 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { DatabaseModule } from '../database/database.module';
 import { ILogger } from '../logger/logger.interface';
 import { LoggerService } from '../logger/logger.service';
-import { User, UserSchema } from '../users/entities/users.schema';
+import { User, UserSchema } from '../users/schemas/users.schema';
 import { UsersRepository } from '../users/users.repository';
 import { AdminUserSeederService } from './user.seeder.service';
 

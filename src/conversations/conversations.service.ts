@@ -2,17 +2,17 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 
 import { RequestContextService } from '../request-context/request-context.service';
 import { ConversationsRepository } from './conversations.repository';
-import { CreateConversationRequest } from './dto/conversation.request.dto';
-import { CreateConversationResponse } from './dto/conversation.response.dto';
-import { Conversation } from './entities/conversations.schema';
+import { CreateConversationRequestDto } from './dto/conversation.request.dto';
+import { CreateConversationResponseDto } from './dto/conversation.response.dto';
+import { Conversation } from './schemas/conversations.schema';
 
 @Injectable()
 export class ConversationsService {
   constructor(private readonly repo: ConversationsRepository) {}
 
   async create(
-    payload: CreateConversationRequest,
-  ): Promise<CreateConversationResponse> {
+    payload: CreateConversationRequestDto,
+  ): Promise<CreateConversationResponseDto> {
     try {
       const user = RequestContextService.getUser();
       const conversation = new Conversation();
@@ -23,7 +23,7 @@ export class ConversationsService {
       return {
         id: newConversation.id,
         message: 'Success Create Conversation',
-      } as CreateConversationResponse;
+      } as CreateConversationResponseDto;
     } catch (err) {
       throw new BadRequestException(err.message);
     }

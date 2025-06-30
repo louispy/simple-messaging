@@ -1,8 +1,8 @@
 import { Body, Controller, Post } from '@nestjs/common';
 
 import { ConversationsService } from './conversations.service';
-import { CreateConversationRequest } from './dto/conversation.request.dto';
-import { CreateConversationResponse } from './dto/conversation.response.dto';
+import { CreateConversationRequestDto } from './dto/conversation.request.dto';
+import { CreateConversationResponseDto } from './dto/conversation.response.dto';
 
 @Controller('/v1/conversations')
 export class ConversationsController {
@@ -10,8 +10,8 @@ export class ConversationsController {
 
   @Post()
   createConversation(
-    @Body() payload: CreateConversationRequest,
-  ): Promise<CreateConversationResponse> {
+    @Body() payload: CreateConversationRequestDto,
+  ): Promise<CreateConversationResponseDto> {
     return this.conversationsService.create(payload);
   }
 }
