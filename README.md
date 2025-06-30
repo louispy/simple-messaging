@@ -16,7 +16,8 @@ Simple Message APIs with NestJS
 4. Run `npm run build` to build app into `dist` folder
 5. Run `npm run start:prod` to run api server on production environment by default on port 3000 unless PORT is specified in environment variable.
 6. Run `npm run start:prod:consumer` to run consumer on production environment
-7. Run `npm run seed:admin:prod` to seed initial user with `superadmin` username and password from the env file.
+7. Run `npm run start:prod:outbox` to run outbox scheduler on production environment
+8. Run `npm run seed:admin:prod` to seed initial user with `superadmin` username and password from the env file.
 
 ## Additional Setups (Optional)
 1. MongoDB: Make sure to create a database for the application. There are three collections: users, conversations, and messages. Apart from the primary keys, the messages collection may also be indexed on timestamps and conversationId for the get and search messages api, i.e 
@@ -68,13 +69,17 @@ The coupling between modules are minimized.
 ### Seeder
 - admin user seeder
 
+### Outbox Scheduler
+- a scheduler to poll for pending outbox events to be sent via kafka
+
 ## Flow
 1. With the `superadmin` user, the create user api POST /v1/users is accessible
 2. POST /v1/conversations api can be used to create a new `conversation`
-3. POST /v1/messages api use the `conversationId` from the create conversations api response as request payload and will create message and publish a message for message indexing to kafka
-4. The index message kafka consumer will try to index with elasticsearch api (max retries = 3 by default)
-5. GET /v1/conversations/:id/messages api can be used to retrieve messages from MongoDB
-6. GET /v1/conversations/:id/messages/search api can be used to retrieve messages from elasticsearch with full text search query of the content
+3. POST /v1/messages api use the `conversationId` from the create conversations api response as request payload and will create message and publish a message for message indexing to outbox
+4. Outbox scheduler will poll for pending events and send the index message to kafka
+5. The index message kafka consumer will try to index with elasticsearch api (max retries = 3 by default)
+7. GET /v1/conversations/:id/messages api can be used to retrieve messages from MongoDB
+8. GET /v1/conversations/:id/messages/search api can be used to retrieve messages from elasticsearch with full text search query of the content
 
 
 ## Docker
