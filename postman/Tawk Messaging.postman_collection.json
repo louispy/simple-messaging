@@ -1,0 +1,1201 @@
+{
+	"info": {
+		"_postman_id": "e2bf4cf0-136b-4e0c-a106-4ec2fb2187b9",
+		"name": "Tawk Messaging",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19090244",
+		"_collection_link": "https://www.postman.com/louisicepat/workspace/tawk-messaging/collection/19090244-e2bf4cf0-136b-4e0c-a106-4ec2fb2187b9?action=share&source=collection_link&creator=19090244"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Hello World",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": [
+						{
+							"name": "Hello World",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}/",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										""
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "html",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "text/html; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "12"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"c-Lve95gjOVATpfV8EL5X4nxwjKHE\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 25 Apr 2025 12:18:06 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "Hello World!"
+						}
+					]
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"superadmin\",\r\n    \"password\": \"mypassword\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/v1/auth/login",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"v1",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "superadmin - Login",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"superadmin\",\r\n    \"password\": \"mypassword\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/v1/auth/login",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"v1",
+										"auth",
+										"login"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "302"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"12e-MBvOevmzP7Cz2S5pnFwqtvLGpcc\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 25 Apr 2025 12:29:06 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"accessToken\": \"{{vault:json-web-token}}\"\n}"
+						},
+						{
+							"name": "Invalid username or password",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"user_one\",\r\n    \"password\": \"passwords\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/v1/auth/login",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"v1",
+										"auth",
+										"login"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "81"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"51-fYnqkU31llzu5muYE6m2wZ+Em6M\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 25 Apr 2025 12:38:17 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Usename or password invalid\",\n    \"error\": \"Unauthorized\",\n    \"statusCode\": 401\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/v1/auth/profile",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"v1",
+								"auth",
+								"profile"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Profile",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}/v1/auth/profile",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"v1",
+										"auth",
+										"profile"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "121"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"79-9T2sOhLPve55LbR6zrGvBaMCc8g\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 25 Apr 2025 12:31:45 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"userId\": \"680b7e7595e48cff13e15884\",\n    \"username\": \"superadmin\",\n    \"roles\": [\n        \"superadmin\"\n    ],\n    \"company\": \"63cb902de99e4e5ba33e6fb5\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Create User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{vault:bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"user_one\",\r\n    \"password\": \"password\",\r\n    \"roles\": [\"user\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/v1/users/",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"v1",
+								"users",
+								""
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Create User",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"user_one\",\r\n    \"password\": \"password\",\r\n    \"roles\": [\"user\"]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/v1/users/",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"v1",
+										"users",
+										""
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "65"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"41-kdNCuXWOPrCZeT+AvAW5phkQIQk\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 25 Apr 2025 12:37:41 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"680b82159d76a90dd293bffa\",\n    \"message\": \"Success create user\"\n}"
+						},
+						{
+							"name": "Forbidden for invalid roles",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"user_one\",\r\n    \"password\": \"password\",\r\n    \"roles\": [\"user\"]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/v1/users/",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"v1",
+										"users",
+										""
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "69"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"45-MZJWZc+Y+RUbHpnhz2B2Vipii24\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 25 Apr 2025 12:38:57 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Forbidden resource\",\n    \"error\": \"Forbidden\",\n    \"statusCode\": 403\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Conversations",
+			"item": [
+				{
+					"name": "Create Conversation",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{vault:bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/v1/conversations/",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"v1",
+								"conversations",
+								""
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Create Conversation",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/v1/conversations/",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"v1",
+										"conversations",
+										""
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "73"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"49-qZmtWvIGJNqCt6BaauYBnNUGCmU\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 25 Apr 2025 14:44:00 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"680b9fb0be11204922d40910\",\n    \"message\": \"Success Create Conversation\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Messages by Conversation Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{vault:bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/v1/conversations/:id/messages?page=1&limit=5",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"v1",
+								"conversations",
+								":id",
+								"messages"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "5"
+								}
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "680ccc79d11048177330a116"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Messages",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}/v1/conversations/:id/messages?page=1&limit=5",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"v1",
+										"conversations",
+										":id",
+										"messages"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "limit",
+											"value": "5"
+										}
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "680b9fb0be11204922d40910"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "841"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"349-D6AxbYCdDE4IwHQGwnen6Sg8Etw\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 26 Apr 2025 08:42:50 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": [\n        {\n            \"senderId\": \"680b82159d76a90dd293bffa\",\n            \"conversationId\": \"680b9fb0be11204922d40910\",\n            \"content\": \"Hello, how are you?\",\n            \"timestamp\": \"2025-04-26T07:36:28.433Z\"\n        },\n        {\n            \"senderId\": \"680b82159d76a90dd293bffa\",\n            \"conversationId\": \"680b9fb0be11204922d40910\",\n            \"content\": \"Hello, how are you?\",\n            \"timestamp\": \"2025-04-26T07:35:38.010Z\"\n        },\n        {\n            \"senderId\": \"680b82159d76a90dd293bffa\",\n            \"conversationId\": \"680b9fb0be11204922d40910\",\n            \"content\": \"Hello, how are you?\",\n            \"timestamp\": \"2025-04-26T07:32:51.826Z\"\n        },\n        {\n            \"senderId\": \"680b82159d76a90dd293bffa\",\n            \"conversationId\": \"680b9fb0be11204922d40910\",\n            \"content\": \"Hello, how are you?\",\n            \"timestamp\": \"2025-04-26T07:27:17.934Z\"\n        },\n        {\n            \"senderId\": \"680b82159d76a90dd293bffa\",\n            \"conversationId\": \"680b9fb0be11204922d40910\",\n            \"content\": \"Hello, how are you?\",\n            \"timestamp\": \"2025-04-26T07:24:16.217Z\"\n        }\n    ],\n    \"paging\": {\n        \"page\": 1,\n        \"limit\": 5,\n        \"count\": 29,\n        \"totalPages\": 6\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Search Messages",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{vault:bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/v1/conversations/:id/messages/search?page=1&limit=5&q=you",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"v1",
+								"conversations",
+								":id",
+								"messages",
+								"search"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "5"
+								},
+								{
+									"key": "sortBy",
+									"value": "timestamp",
+									"disabled": true
+								},
+								{
+									"key": "sortDir",
+									"value": "desc",
+									"disabled": true
+								},
+								{
+									"key": "q",
+									"value": "you"
+								}
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "680ccc79d11048177330a116"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Search Messages 3",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}/v1/conversations/:id/messages/search?page=1&limit=5&q=you",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"v1",
+										"conversations",
+										":id",
+										"messages",
+										"search"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "limit",
+											"value": "5"
+										},
+										{
+											"key": "sortBy",
+											"value": "timestamp",
+											"disabled": true
+										},
+										{
+											"key": "sortDir",
+											"value": "desc",
+											"disabled": true
+										},
+										{
+											"key": "q",
+											"value": "you"
+										}
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "680ccc79d11048177330a116"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "732"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"2dc-KPVcwrjtTcGT9zLp7+GcZ7ktaZ4\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 26 Apr 2025 13:42:13 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": [\n        {\n            \"senderId\": \"680b82159d76a90dd293bffa\",\n            \"id\": \"680ce12ad11048177330a12d\",\n            \"conversationId\": \"680ccc79d11048177330a116\",\n            \"content\": \"I am fine, thank you. How is your day?\",\n            \"timestamp\": \"2025-04-26T13:35:38.018Z\",\n            \"metadata\": {\n                \"language\": \"en\"\n            }\n        },\n        {\n            \"senderId\": \"680b82159d76a90dd293bffa\",\n            \"id\": \"680ce123d11048177330a12a\",\n            \"conversationId\": \"680ccc79d11048177330a116\",\n            \"content\": \"Hello, how are you?\",\n            \"timestamp\": \"2025-04-26T13:35:31.363Z\",\n            \"metadata\": {\n                \"language\": \"en\"\n            }\n        },\n        {\n            \"senderId\": \"680b82159d76a90dd293bffa\",\n            \"id\": \"680ccc8cd11048177330a119\",\n            \"conversationId\": \"680ccc79d11048177330a116\",\n            \"content\": \"Hello, how are you?\",\n            \"timestamp\": \"2025-04-26T12:07:40.625Z\",\n            \"metadata\": {\n                \"language\": \"en\"\n            }\n        }\n    ],\n    \"paging\": {\n        \"page\": 1,\n        \"limit\": 5,\n        \"count\": 3,\n        \"totalPages\": 1\n    }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Messages",
+			"item": [
+				{
+					"name": "Create Message",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{vault:bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"conversationId\": \"680ccc79d11048177330a116\",\r\n    \"content\": \"Cool. Do you have any plans for evening?\",\r\n    \"metadata\": {\r\n        \"language\": \"en\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/v1/messages/",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"v1",
+								"messages",
+								""
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "400 payload validation",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/v1/messages/",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"v1",
+										"messages",
+										""
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "245"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"f5-AsLmCTWeq7S3OZxSYUPFHXxQHdw\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 25 Apr 2025 15:35:04 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": [\n        \"conversationId should not be empty\",\n        \"undefined is not a valid ObjectId\",\n        \"conversationId must be a string\",\n        \"content should not be empty\",\n        \"content must be a string\",\n        \"metadata must be an object\"\n    ],\n    \"error\": \"Bad Request\",\n    \"statusCode\": 400\n}"
+						},
+						{
+							"name": "400 Conversation not found validation",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"conversationId\": \"680b9fb0be11204922d40911\",\r\n    \"content\": \"Hello World!\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/v1/messages/",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"v1",
+										"messages",
+										""
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "101"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"65-KrWXMMhAg6jV0fGFS5hIR1ZcAmY\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 25 Apr 2025 15:43:54 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Conversation 680b9fb0be11204922d40911 not found!\",\n    \"error\": \"Bad Request\",\n    \"statusCode\": 400\n}"
+						},
+						{
+							"name": "200 - normal message",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"conversationId\": \"680b9fb0be11204922d40910\",\r\n    \"content\": \"Hello World!\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/v1/messages/",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"v1",
+										"messages",
+										""
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "68"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"44-sE06kWxolyb45bttKhak6+nEsgI\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 25 Apr 2025 15:44:21 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"680badd5637e132769244bb8\",\n    \"message\": \"Success Create Message\"\n}"
+						},
+						{
+							"name": "200 -with metadata",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"conversationId\": \"680b9fb0be11204922d40910\",\r\n    \"content\": \"I'm fine, how about you?\",\r\n    \"metadata\": {\r\n        \"language\": \"en\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/v1/messages/",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"v1",
+										"messages",
+										""
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "68"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"44-i209Jc2znLZdlX0WFK/6i+qBX6M\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 26 Apr 2025 09:43:33 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"680caac5c3f86a3eff2b7399\",\n    \"message\": \"Success Create Message\"\n}"
+						}
+					]
+				}
+			]
+		}
+	]
+}
