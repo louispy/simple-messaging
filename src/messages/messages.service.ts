@@ -1,6 +1,11 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { randomUUID } from 'crypto';
 
 import { ConversationsRepository } from '../conversations/conversations.repository';
+import { KafkaTopic } from '../kafka/interfaces/kafka.interface';
+import { KAFKA_TOPIC } from '../kafka/interfaces/kafka.tokens.interface';
+import { KafkaProducerService } from '../kafka/kafka.producer.service';
+import { ILogger, LOGGER } from '../logger/logger.interface';
 import { RequestContextService } from '../request-context/request-context.service';
 import { CreateMessageRequestDto } from './dto/message.request.dto';
 import { CreateMessageResponseDto } from './dto/message.response.dto';
@@ -12,6 +17,11 @@ export class MessagesService {
   constructor(
     private readonly repo: MessagesRepository,
     private readonly conversationRepo: ConversationsRepository,
+    private readonly kafkaProducerService: KafkaProducerService,
+    @Inject(LOGGER)
+    private readonly logger: ILogger,
+    @Inject(KAFKA_TOPIC)
+    private readonly kafkaTopic: KafkaTopic,
   ) {}
 
   public async createMessage(
@@ -24,6 +34,7 @@ export class MessagesService {
       if (!conversation) {
         throw new Error(`Conversation ${payload.conversationId} not found!`);
       }
+      const now = new Date();
       const user = RequestContextService.getUser();
       const message = new Message();
       message.conversationId = payload.conversationId;
@@ -33,6 +44,13 @@ export class MessagesService {
       message.updatedBy = user.userId;
       const newConversation = await this.repo.insert(message);
 
+      await this.kafkaProducerService
+        .sendMessage(this.kafkaTopic.indexMessage, randomUUID(), message, {
+          timestamp: now,
+        })
+        .catch((err) => {
+          this.logger.error('error while producing message', err);
+        });
       return {
         id: newConversation.id,
         message: 'Success Create Message',
