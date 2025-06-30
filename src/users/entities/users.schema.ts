@@ -32,8 +32,8 @@ export class User {
   @Prop({ type: [String], required: true })
   roles: string[];
 
-  @Prop({ required: true })
-  company: string;
+  @Prop({ required: false })
+  company?: string;
 
   @Prop({ required: false })
   email: string;

@@ -17,7 +17,6 @@ export class UsersService {
       const user = new User();
       user.username = payload.username;
       user.password = await hash(payload.password, 10);
-      user.company = payload.company;
       user.name = payload.name || '';
       user.email = payload.email || '';
       user.roles = payload.roles || [];
