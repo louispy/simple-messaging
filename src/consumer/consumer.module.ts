@@ -1,11 +1,26 @@
 import { Module } from '@nestjs/common';
-import { ConsumerService } from './consumer.service';
-import { ConsumerController } from './consumer.controller';
+import { ConfigService } from '@nestjs/config';
+
+import {
+  ELASTICSEARCH_MESSAGES_INDEX,
+  ElasticsearchModule,
+} from '../elasticsearch/elasticsearch.module';
 import { KafkaConsumerModule } from '../kafka/kafka.consumer.module';
+import { ConsumerController } from './consumer.controller';
+import { ConsumerService } from './consumer.service';
+import { ElasticsearchService } from '@nestjs/elasticsearch';
 
 @Module({
-  imports: [KafkaConsumerModule],
+  imports: [KafkaConsumerModule, ElasticsearchModule],
   controllers: [ConsumerController],
-  providers: [ConsumerService],
+  providers: [
+    {
+      provide: ELASTICSEARCH_MESSAGES_INDEX,
+      useFactory: (config: ConfigService) =>
+        config.get('ELASTICSEARCH_MESSAGES_INDEX', 'messages'),
+      inject: [ConfigService],
+    },
+    ConsumerService,
+  ],
 })
 export class ConsumerModule {}

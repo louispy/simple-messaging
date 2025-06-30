@@ -13,6 +13,7 @@ import { DatabaseModule } from './database/database.module';
 import { LoggerModule } from './logger/logger.module';
 import { MessagesModule } from './messages/messages.module';
 // import { ConsumerModule } from './consumer/consumer.module';
+import { ElasticsearchModule } from './elasticsearch/elasticsearch.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { MessagesModule } from './messages/messages.module';
     LoggerModule,
     ConversationsModule,
     MessagesModule,
+    ElasticsearchModule,
     // ConsumerModule,
   ],
   controllers: [AppController],
