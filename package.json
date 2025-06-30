@@ -15,7 +15,7 @@
     "start:prod": "cross-env NODE_ENV=production node dist/main",
     "start:prod:consumer": "cross-env NODE_ENV=production MODE=consumer node dist/main",
     "seed:admin": "cross-env NODE_ENV=development ts-node -r tsconfig-paths/register src/seed.user.ts",
-    "seed:admin:prod": "cross-env NODE_ENV=production ts-node -r tsconfig-paths/register dist/seed.user.ts",
+    "seed:admin:prod": "cross-env NODE_ENV=production ts-node -r tsconfig-paths/register dist/seed.user.js",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -46,7 +46,8 @@
     "passport-local": "^1.0.0",
     "reflect-metadata": "^0.2.2",
     "rimraf": "^6.0.1",
-    "rxjs": "^7.8.2"
+    "rxjs": "^7.8.2",
+    "cross-env": "^7.0.3"
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.7",
@@ -61,7 +62,6 @@
     "@types/supertest": "^6.0.3",
     "@typescript-eslint/eslint-plugin": "^8.31.0",
     "@typescript-eslint/parser": "^8.31.0",
-    "cross-env": "^7.0.3",
     "eslint": "^9.25.1",
     "eslint-config-prettier": "^10.1.2",
     "eslint-plugin-prettier": "^5.2.6",

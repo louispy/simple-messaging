@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  api:
+    image: tawk-messaging
+    env_file:
+      - production.env
+    environment:
+      - NODE_ENV=production
+    ports:
+      - "3000:3000"
+    # deploy:
+    #   replicas: 3
+
+  consumer:
+    image: tawk-messaging
+    env_file:
+      - production.env
+    environment:
+      - NODE_ENV=production
+      - MODE=consumer
+    # deploy:
+    #   replicas: 3
+
+  seed:
+    image: tawk-messaging
+    env_file:
+      - production.env
+    command: ["npm", "run", "seed:admin:prod"]
+    environment:
+      - NODE_ENV=production
