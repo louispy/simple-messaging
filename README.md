@@ -1,4 +1,4 @@
-# Tawk Messaging
+# Simple Messaging
 
 Simple Message APIs with NestJS
 
@@ -24,7 +24,7 @@ Simple Message APIs with NestJS
 db.createCollection("messages") // if collection doesn't exist yet
 db.messages.createIndex({ conversationId: 1, timestamp: -1 })
 ```
-2. Kafka: The config for auto topic generation is on in this application. However for a better control, the topic (default: tawk-messaging.index-messages) may be created beforehand to setup the topic settings, i.e number of partitions, isr.
+2. Kafka: The config for auto topic generation is on in this application. However for a better control, the topic (default: simple-messaging.index-messages) may be created beforehand to setup the topic settings, i.e number of partitions, isr.
 3. Elasticsearch: Although by default indices are created dynamically, the index can be initialized manually to define mappings before inserting documents, i.e
 ```
 curl -X PUT "http://localhost:9200/messages" -H "Content-Type: application/json" -d '
@@ -80,5 +80,5 @@ The coupling between modules are minimized.
 ## Docker
 
 ```
-docker build -t tawk-messaging .
+docker build -t simple-messaging .
 ```
