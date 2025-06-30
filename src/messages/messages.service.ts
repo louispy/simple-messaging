@@ -43,17 +43,17 @@ export class MessagesService {
       message.createdBy = user.userId;
       message.updatedBy = user.userId;
       message.timestamp = payload.timestamp ? new Date(payload.timestamp) : now;
-      const newConversation = await this.repo.insert(message);
+      const newMessage = await this.repo.insert(message);
 
       await this.kafkaProducerService
-        .sendMessage(this.kafkaTopic.indexMessage, randomUUID(), message, {
+        .sendMessage(this.kafkaTopic.indexMessage, randomUUID(), newMessage, {
           timestamp: now,
         })
         .catch((err) => {
           this.logger.error('error while producing message', err);
         });
       return {
-        id: newConversation.id,
+        id: newMessage.id,
         message: 'Success Create Message',
       } as CreateMessageResponseDto;
     } catch (err) {
