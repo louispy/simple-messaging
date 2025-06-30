@@ -121,8 +121,15 @@ export class ConversationsService {
         from: (page - 1) * limit,
         size: limit,
         query: {
-          match: {
-            content: query,
+          bool: {
+            must: [
+              {
+                match: {
+                  content: query,
+                },
+              },
+              { term: { conversationId: payload.conversationId } },
+            ],
           },
         },
         sort: {
