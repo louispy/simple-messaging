@@ -15,6 +15,7 @@ import {
   Conversation,
   ConversationSchema,
 } from './schemas/conversations.schema';
+import { RedisModule } from '../redis/redis.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import {
       { name: Message.name, schema: MessageSchema },
     ]),
     ElasticsearchModule,
+    RedisModule,
   ],
   controllers: [ConversationsController],
   providers: [

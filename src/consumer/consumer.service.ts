@@ -47,8 +47,6 @@ export class ConsumerService extends BaseKafkaConsumerService {
         body: instanceToPlain(msg),
         id: msg.id,
       });
-      console.log('success consume message!!');
-      // console.log(msg);
     } catch (err) {
       console.error(err);
       throw err;

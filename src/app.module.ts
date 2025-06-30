@@ -14,6 +14,7 @@ import { LoggerModule } from './logger/logger.module';
 import { MessagesModule } from './messages/messages.module';
 // import { ConsumerModule } from './consumer/consumer.module';
 import { ElasticsearchModule } from './elasticsearch/elasticsearch.module';
+import { RedisModule } from './redis/redis.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { ElasticsearchModule } from './elasticsearch/elasticsearch.module';
     ConversationsModule,
     MessagesModule,
     ElasticsearchModule,
+    RedisModule,
     // ConsumerModule,
   ],
   controllers: [AppController],

@@ -1,10 +1,18 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
+import {
+  ClassConstructor,
+  instanceToPlain,
+  plainToInstance,
+} from 'class-transformer';
+import { validateSync } from 'class-validator';
+import Redis from 'ioredis';
 import * as _ from 'lodash';
 
 import { getPagination } from '../common/utils';
 import { ELASTICSEARCH_MESSAGES_INDEX } from '../elasticsearch/elasticsearch.module';
 import { MessagesRepository } from '../messages/messages.repository';
+import { REDIS_CLIENT } from '../redis/redis.module';
 import { RequestContextService } from '../request-context/request-context.service';
 import { ConversationsRepository } from './conversations.repository';
 import {
@@ -27,6 +35,7 @@ export class ConversationsService {
     private readonly messagesRepo: MessagesRepository,
     @Inject(ELASTICSEARCH_MESSAGES_INDEX) private readonly index: string,
     private readonly elasticsearchService: ElasticsearchService,
+    @Inject(REDIS_CLIENT) private readonly redis: Redis,
   ) {}
 
   async create(
@@ -56,6 +65,14 @@ export class ConversationsService {
     const query: any = {
       conversationId: payload.conversationId,
     };
+    const key = `get-messages:${JSON.stringify(instanceToPlain(payload))}`;
+    const cached = await this.getCachedResponse<GetMessagesResponseDto>(
+      key,
+      GetMessagesResponseDto,
+    );
+    if (cached) {
+      return cached;
+    }
 
     const [messages, count] = await Promise.all([
       this.messagesRepo.find(query, page, limit, {
@@ -65,7 +82,7 @@ export class ConversationsService {
       }),
       this.messagesRepo.count(query),
     ]);
-    return {
+    const res = {
       data: messages.map((message) => ({
         senderId: message.createdBy,
         id: message.id,
@@ -75,7 +92,11 @@ export class ConversationsService {
         metadata: message.metadata,
       })),
       paging: getPagination(page, limit, count),
-    } as GetMessagesResponseDto;
+    };
+
+    await this.redis.set(key, JSON.stringify(res), 'EX', 60).catch();
+
+    return res;
   }
 
   async searchMessages(
@@ -85,7 +106,17 @@ export class ConversationsService {
       const page = payload.page || 1;
       const limit = payload.limit || 10;
       let query: string = payload.q || '';
-      const res = await this.elasticsearchService.search({
+
+      const key = `search-messages:${JSON.stringify(instanceToPlain(payload))}`;
+      const cached = await this.getCachedResponse<SearchMessagesResponseDto>(
+        key,
+        SearchMessagesResponseDto,
+      );
+      if (cached) {
+        return cached;
+      }
+
+      const searchRes = await this.elasticsearchService.search({
         index: this.index,
         from: (page - 1) * limit,
         size: limit,
@@ -99,8 +130,8 @@ export class ConversationsService {
         },
       });
 
-      return {
-        data: res.hits.hits.map(
+      const res = {
+        data: searchRes.hits.hits.map(
           (message) =>
             ({
               senderId: _.get(message, '_source.createdBy', ''),
@@ -111,10 +142,37 @@ export class ConversationsService {
               metadata: _.get(message, '_source.metadata'),
             }) as MessageDto,
         ),
-        paging: getPagination(page, limit, _.get(res, 'hits.total.value', 0)),
+        paging: getPagination(
+          page,
+          limit,
+          _.get(searchRes, 'hits.total.value', 0),
+        ),
       };
+
+      await this.redis.set(key, JSON.stringify(res), 'EX', 60).catch();
+
+      return res;
     } catch (err) {
       throw new BadRequestException(err);
+    }
+  }
+
+  private async getCachedResponse<T extends object>(
+    key: string,
+    cls: ClassConstructor<T>,
+  ): Promise<T | null> {
+    try {
+      const cached = await this.redis.get(key);
+      if (!cached) return null;
+      const cachedRes = plainToInstance(cls, JSON.parse(cached));
+      const errors = validateSync(cachedRes);
+      if (errors.length > 0) {
+        throw new Error(`Payload validation failed: ${JSON.stringify(errors)}`);
+      }
+
+      return cachedRes;
+    } catch (err) {
+      return null;
     }
   }
 }
