@@ -45,6 +45,7 @@ export class ConsumerService extends BaseKafkaConsumerService {
       await this.elasticsearchService.index({
         index: this.index,
         body: instanceToPlain(msg),
+        id: msg.id,
       });
       console.log('success consume message!!');
       console.log(msg);

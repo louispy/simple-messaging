@@ -14,6 +14,9 @@ export interface BaseConsumerMessageDto {
 
 export class IndexMessageMessageDto {
   @IsString()
+  id: string;
+
+  @IsString()
   conversationId: string;
 
   @IsString()
