@@ -2,12 +2,10 @@ import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 
-import {
-  ELASTICSEARCH_MESSAGES_INDEX,
-  ElasticsearchModule,
-} from '../elasticsearch/elasticsearch.module';
+import { ElasticsearchModule } from '../elasticsearch/elasticsearch.module';
 import { MessagesRepository } from '../messages/messages.repository';
 import { Message, MessageSchema } from '../messages/schemas/messages.schema';
+import { RedisModule } from '../redis/redis.module';
 import { ConversationsController } from './conversations.controller';
 import { ConversationsRepository } from './conversations.repository';
 import { ConversationsService } from './conversations.service';
@@ -15,7 +13,7 @@ import {
   Conversation,
   ConversationSchema,
 } from './schemas/conversations.schema';
-import { RedisModule } from '../redis/redis.module';
+import { ELASTICSEARCH_MESSAGES_INDEX } from '../elasticsearch/interfaces/elasticsearch.tokens.interface';
 
 @Module({
   imports: [

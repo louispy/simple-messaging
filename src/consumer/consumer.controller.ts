@@ -17,7 +17,7 @@ export class ConsumerController {
 
   @EventPattern(topics.indexMessage)
   async handleMessage(@Payload() payload: any, @Ctx() context: KafkaContext) {
-    return this.consumerService.retry(payload, context);
+    return this.consumerService.retry(payload, context, 0);
   }
 
 }

@@ -1,10 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { KafkaContext } from '@nestjs/microservices';
 import { instanceToPlain, plainToInstance } from 'class-transformer';
 import { validateSync } from 'class-validator';
 
-import { ELASTICSEARCH_MESSAGES_INDEX } from '../elasticsearch/elasticsearch.module';
+import { ElasticSearchIndexingService } from '../elasticsearch/elasticsearch-indexing.service';
 import { KafkaTopic } from '../kafka/interfaces/kafka.interface';
 import { KAFKA_TOPIC } from '../kafka/interfaces/kafka.tokens.interface';
 import { BaseKafkaConsumerService } from '../kafka/kafka.consumer.service';
@@ -14,8 +13,7 @@ import { IndexMessageMessageDto } from './dto/consumer.message.dto';
 export class ConsumerService extends BaseKafkaConsumerService {
   constructor(
     @Inject(KAFKA_TOPIC) private readonly kafkaTopic: KafkaTopic,
-    @Inject(ELASTICSEARCH_MESSAGES_INDEX) private readonly index: string,
-    private readonly elasticsearchService: ElasticsearchService,
+    private readonly elasticSearchIndexingService: ElasticSearchIndexingService,
   ) {
     super();
   }
@@ -43,14 +41,13 @@ export class ConsumerService extends BaseKafkaConsumerService {
         return;
       }
 
-      await this.elasticsearchService.index({
-        index: this.index,
-        body: instanceToPlain(msg),
-        id: msg.id,
-      });
+      await this.elasticSearchIndexingService.indexMessage(
+        instanceToPlain(msg),
+        msg.id,
+      );
     } catch (err) {
       console.error(err);
-      throw err;
+      // throw err;
     }
   }
 }

@@ -10,10 +10,9 @@ import Redis from 'ioredis';
 import * as _ from 'lodash';
 
 import { getPagination } from '../common/utils';
-import { ELASTICSEARCH_MESSAGES_INDEX } from '../elasticsearch/elasticsearch.module';
+import { ELASTICSEARCH_MESSAGES_INDEX } from '../elasticsearch/interfaces/elasticsearch.tokens.interface';
 import { MessagesRepository } from '../messages/messages.repository';
 import { REDIS_CLIENT } from '../redis/redis.module';
-import { RequestContextService } from '../request-context/request-context.service';
 import { ConversationsRepository } from './conversations.repository';
 import {
   CreateConversationRequestDto,

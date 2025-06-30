@@ -54,6 +54,7 @@ export class OutboxService {
         },
         1,
         10,
+        { sort: 'updatedAt', sortDir: 'asc' },
       );
       if (pendingOutboxEvents && pendingOutboxEvents.length) {
         await this.outboxRepo.updateMany(
