@@ -13,7 +13,7 @@ Simple Message APIs with NestJS
 2. Run `npm install` to install dependencies
 3. Create an {envname}.env file depending on current environment (NODE_ENV), i.e development.env for development and production.env for production
 4. Run `npm run build` to build app into `dist` folder
-5. Run `npm run start:prod` to run api server on production environment
+5. Run `npm run start:prod` to run api server on production environment by default on port 3000 unless PORT is specified in environment variable.
 6. Run `npm run start:prod:consumer` to run consumer on production environment
 7. Run `npm run seed:admin:prod` to seed initial user with `superadmin` username and password from the env file.
 
