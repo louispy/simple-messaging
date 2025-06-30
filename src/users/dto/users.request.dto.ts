@@ -1,7 +1,15 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { IsArray, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
+import {
+  IsArray,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MinLength,
+} from 'class-validator';
 
-export class CreateUserDto {
+import { BaseRequest } from '../../common/dto/base.request';
+
+export class CreateUserDto extends BaseRequest {
   @IsString()
   @IsNotEmpty()
   @MinLength(6)

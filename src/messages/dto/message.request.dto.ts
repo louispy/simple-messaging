@@ -7,9 +7,10 @@ import {
   Validate,
 } from 'class-validator';
 
+import { BaseRequest } from '../../common/dto/base.request';
 import { IsObjectId } from '../../common/validators/oid.validator';
 
-export class CreateMessageRequestDto {
+export class CreateMessageRequestDto extends BaseRequest {
   @IsString()
   @Validate(IsObjectId)
   @IsNotEmpty()

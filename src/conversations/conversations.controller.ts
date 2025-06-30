@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 
 import { ValidateObjectIdPipe } from '../common/pipes/oid.pipe';
+import { RequestContextService } from '../request-context/request-context.service';
 import { ConversationsService } from './conversations.service';
 import {
   CreateConversationRequestDto,
@@ -21,6 +22,8 @@ export class ConversationsController {
   createConversation(
     @Body() payload: CreateConversationRequestDto,
   ): Promise<CreateConversationResponseDto> {
+    const user = RequestContextService.getUser();
+    payload.userId = user.userId;
     return this.conversationsService.create(payload);
   }
 

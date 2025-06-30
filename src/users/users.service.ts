@@ -13,15 +13,14 @@ export class UsersService {
 
   async createUser(payload: CreateUserDto): Promise<CreateUserResponse> {
     try {
-      const currUser = RequestContextService.getUser();
       const user = new User();
       user.username = payload.username;
       user.password = await hash(payload.password, 10);
       user.name = payload.name || '';
       user.email = payload.email || '';
       user.roles = payload.roles || [];
-      user.createdBy = currUser.userId;
-      user.updatedBy = currUser.userId;
+      user.createdBy = payload.userId;
+      user.updatedBy = payload.userId;
       const newUser = await this.repo.insert(user);
 
       return {

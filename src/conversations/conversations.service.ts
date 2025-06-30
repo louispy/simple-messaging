@@ -42,10 +42,9 @@ export class ConversationsService {
     payload: CreateConversationRequestDto,
   ): Promise<CreateConversationResponseDto> {
     try {
-      const user = RequestContextService.getUser();
       const conversation = new Conversation();
-      conversation.createdBy = user.userId;
-      conversation.updatedBy = user.userId;
+      conversation.createdBy = payload.userId;
+      conversation.updatedBy = payload.userId;
       const newConversation = await this.repo.insert(conversation);
 
       return {
